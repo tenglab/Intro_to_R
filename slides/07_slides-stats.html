@@ -4,7 +4,7 @@
     <title>Lea.orange[R]ning about Statistics</title>
     <meta charset="utf-8" />
     <meta name="author" content="Zachary Thompson" />
-    <meta name="date" content="2024-07-10" />
+    <meta name="date" content="2025-05-21" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
@@ -46,7 +46,7 @@ Zachary Thompson&lt;br&gt;
 ]
 
 .talk-date.moffitt-gray[
-July 10, 2024
+May 21, 2025
 ]
 ]
 
@@ -102,28 +102,28 @@ or to force either to be shown
  
 
 
-```r
+``` r
  here()
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2024"
+[1] "F:/myGitRepo/Intro_to_R"
 ```
 
-```r
+``` r
  here("data","tcga-clinical.txt")
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2024/data/tcga-clinical.txt"
+[1] "F:/myGitRepo/Intro_to_R/data/tcga-clinical.txt"
 ```
 
-```r
+``` r
  here("data","tcga-gene-exp.txt")
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2024/data/tcga-gene-exp.txt"
+[1] "F:/myGitRepo/Intro_to_R/data/tcga-gene-exp.txt"
 ```
 
 ---
@@ -132,7 +132,7 @@ or to force either to be shown
  
 
 
-```r
+``` r
  clinical &lt;- read.csv(file = here("data","tcga_clinical.txt"),
                                            header = TRUE, sep = "")
   geneexp &lt;- read.csv(file = here("data","tcga_gene_exp.txt"),
@@ -149,7 +149,7 @@ or to force either to be shown
  
 
 
-```r
+``` r
   tcga &lt;- left_join(clinical, geneexp, by = "bcr_patient_barcode")
 
      intersect(names(clinical), names(geneexp))
@@ -159,7 +159,7 @@ or to force either to be shown
 [1] "bcr_patient_barcode"
 ```
 
-```r
+``` r
      dim(tcga) 
 ```
 
@@ -177,7 +177,7 @@ or to force either to be shown
  
 
 
-```r
+``` r
   tcga &lt;- tcga %&gt;% mutate( 
   smoking = case_when(
     tobacco_smoking_history %in% c(
@@ -201,7 +201,7 @@ or to force either to be shown
  
 
 
-```r
+``` r
 janitor::tabyl(tcga, radiation_therapy, vital_status )
 ```
 
@@ -219,7 +219,7 @@ janitor::tabyl(tcga, radiation_therapy, vital_status )
  
 
 
-```r
+``` r
 janitor::tabyl(tcga, radiation_therapy, vital_status, 
                show_na = FALSE )
 ```
@@ -234,7 +234,7 @@ janitor::tabyl(tcga, radiation_therapy, vital_status,
 
 ## Review of tables
 
-```r
+``` r
 tcga %&gt;% 
   tabyl(smoking, gender, show_na = FALSE )
 ```
@@ -250,7 +250,7 @@ tcga %&gt;%
 
 ## Review of tables
 
-```r
+``` r
 tcga %&gt;%
   tabyl(smoking, gender, show_na = FALSE ) %&gt;%
   adorn_totals(where = "row")
@@ -268,7 +268,7 @@ tcga %&gt;%
 
 ## Review of tables
 
-```r
+``` r
 tcga %&gt;% 
   tabyl(smoking, gender, show_na = FALSE ) %&gt;% 
   adorn_totals(where = c("col"))
@@ -287,7 +287,7 @@ tcga %&gt;%
 
 ## Review of tables
 
-```r
+``` r
 tcga %&gt;% 
   tabyl(smoking, gender, show_na = FALSE ) %&gt;% 
   adorn_totals(where = c("row","col"))
@@ -305,7 +305,7 @@ tcga %&gt;%
 
 ## Review of tables
 
-```r
+``` r
 tcga %&gt;% 
   tabyl(smoking, gender, show_na = FALSE ) %&gt;% 
   adorn_totals(where = c("row","col")) %&gt;% 
@@ -324,7 +324,7 @@ tcga %&gt;%
 
 ## Review of tables
 
-```r
+``` r
 tcga %&gt;% 
   tabyl(smoking, gender, show_na = FALSE ) %&gt;% 
   adorn_totals(where = c("row","col")) %&gt;% 
@@ -344,7 +344,7 @@ tcga %&gt;%
 
 ## Review of tables
 
-```r
+``` r
 tcga %&gt;% 
   tabyl(smoking, gender, show_na = FALSE ) %&gt;% 
   adorn_totals(where = c("row","col")) %&gt;% 
@@ -404,7 +404,7 @@ The null hypothesis of the Chi-Square test is that no relationship exists betwee
  
 
 
-```r
+``` r
 tcga %&gt;% tabyl( smoking, gender , show_na = FALSE ) %&gt;%
   chisq.test()
 ```
@@ -429,7 +429,7 @@ The p-value is very low so we reject the null hypothesis that there is no associ
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(tcga %&gt;% filter(!is.na(smoking)),
        aes(x = gender, fill = smoking )) +  
   geom_bar(position = "fill") +
@@ -463,7 +463,7 @@ Unlike most statistical tests, Fisher's exact test does not use a mathematical f
  
 
 
-```r
+``` r
 tcga &lt;- tcga  %&gt;% mutate(Death = ifelse(vital_status == "Dead"," Yes","No"))
 
 tcga %&gt;% filter(race %in% c("ASIAN")) %&gt;% 
@@ -489,7 +489,7 @@ The null hypothesis is that the relative proportions of one variable are indepen
 
 
 
-```r
+``` r
 tcga %&gt;% filter(race %in% c("ASIAN")) %&gt;% 
   tabyl(gender, Death, show_na = TRUE) %&gt;% fisher.test() 
 ```
@@ -519,7 +519,7 @@ odds ratio
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(tcga %&gt;% filter(race %in% c("ASIAN" )),
        aes(x = gender, fill = Death )) +  
   geom_bar(position = "fill") +
@@ -589,7 +589,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
  OSdata &lt;-  data.frame(OStime = tcga$OS.time/365, 
                        Death = I(tcga$vital_status=="Dead"))   
 ```
@@ -598,7 +598,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Result]
 
 
-```r
+``` r
  head(OSdata, 10) 
 ```
 
@@ -632,7 +632,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
  OS_obj&lt;-survival::Surv(tcga$OS.time/365, I(tcga$vital_status=="Dead"))  
 ```
 ]
@@ -640,7 +640,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Result]
 
 
-```r
+``` r
  head(OS_obj,40) 
 ```
 
@@ -668,7 +668,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
  OSdata &lt;- bind_cols(OSdata, OS_obj)
 ```
 ]
@@ -676,7 +676,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Result]
 
 
-```r
+``` r
  head(OSdata, 9) 
 ```
 
@@ -707,7 +707,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
  kmfit &lt;-  survfit(OS_obj ~ gender, data = tcga)
 ```
 ]
@@ -715,7 +715,7 @@ An important advantage of the Kaplan–Meier curve is that the method can take i
 .panel[.panel-name[R Result]
 
 
-```r
+``` r
  kmfit 
 ```
 
@@ -740,7 +740,7 @@ gender=MALE   719    260   6.18    5.44    7.75
  
 
 
-```r
+``` r
  summary(kmfit) 
 ```
 
@@ -1133,7 +1133,7 @@ Call: survfit(formula = OS_obj ~ gender, data = tcga)
 ##  Kaplan-Meier estimates and curves: Estimating x-year survival
 
 
-```r
+``` r
 summary(survfit(OS_obj ~ gender, data = tcga), times = 5)
 ```
 
@@ -1264,7 +1264,7 @@ or a confidence interval.
 ## Log rank test R code
  
 
-```r
+``` r
 survdiff(OS_obj ~ smoking, data = tcga)
 ```
 
@@ -1329,7 +1329,7 @@ smoking=Never   160       49     63.1     3.157     4.463
 
  
 
-```r
+``` r
 library(survminer)
 
 tcganonasmoking &lt;- tcga %&gt;% filter(!is.na(smoking)) %&gt;%
@@ -1340,7 +1340,7 @@ tcganonasmoking &lt;- tcga %&gt;% filter(!is.na(smoking)) %&gt;%
 .panel[.panel-name[R Result]
 
 
-```r
+``` r
  pairwise_survdiff(OS_objs ~  smoking, data = tcganonasmoking, 
                    p.adjust.method = "none", rho = 0)
 ```
@@ -1383,11 +1383,11 @@ P value adjustment method: none
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="libs/remark-0.14.0.min.js"></script>
 <script>var slideshow = remark.create({
-"slideNumberFormat": "%current%",
-"highlightStyle": "atom-one-light",
-"highlightLines": true,
-"ratio": "16:9",
-"countIncrementalSlides": true
+  "slideNumberFormat": "%current%",
+  "highlightStyle": "atom-one-light",
+  "highlightLines": true,
+  "ratio": "16:9",
+  "countIncrementalSlides": true
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
