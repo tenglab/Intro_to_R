@@ -4,7 +4,7 @@ subtitle: "ggplot2"
 author: 
   - Ram Thapa
 institute: "Moffitt Cancer Center"
-date: "June 21, 2023"
+date: "June 11, 2025"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -107,7 +107,6 @@ or to force either to be shown
 -->
 
 ---
-class: middle
 
 - Data visualization is important in most phases of data analysis workflow i.e. from exploratory data analysis to effectively communicating our results
 
@@ -120,40 +119,49 @@ class: middle
 This quote from John Tukey explains the essence of data visualization
 
 ---
+class: middle
+
 Plotting with [{ggplot2}](https://ggplot2.tidyverse.org/) package.
 .pull-left[
 - {`ggplot2`} is one of the most popular R packages for data visualization. It is a part of {`tidyverse`} R meta-package
 
 - {`ggplot2`} is based on a set of principles "Grammar of graphic" and provides a cohesive system for declaratively creating elegant graphics
-
-- Statistical graphic is a mapping from data to aesthetics (such as color, shape and size) represented by geometrics (such as points, lines etc.)
 ]
 
 .pull-right[
-![](04_visualizations_files/figure-html/ggplot2_exploratory.png)
-Artwork by @allison_horst
+.center[
+      <img src="04_visualizations_files/figure-html/ggplot2.png" alt="Description of the image" width="300"/>
+  ]
 ]
 
+- Statistical graphic is a mapping from data to aesthetics (such as color, shape and size) represented by geometrics (such as points, lines etc.)
 ---
 ## Grammar of graphics
 
 The basic idea is that a statistical graphic can be created in a layered fashion, starting with a layer showing the data then adding layers of graphical objects, annotations and statistical summaries
 
-.w-40.center[
-![](04_visualizations_files/figure-html/ggplot_scheme.png)
-]
+Components
+- Layer
+  * Data
+  * Mapping
+  * Geometric object (geom)
+  * Statistical transformation (stat)
+  * Position adjustment (position)
+- Scale
+- Coordinate system (coord)
+- Faceting (facet)
 
 ---
 ### Data layer
 
-Data to be plotted
+Data (information) to be visualized
 
-{`ggplot2`} prefers data to be in *tidy* format 
+**Tidy data** is a standard way of mapping the meaning of a dataset to its structure.
 
 Key features of tidy data:
-- Each column is a variable
-- Each row is an observation
-- Each value must have its own cell
+- each column is a variable
+- each row is an observation
+- each value must have its own cell
 
 
 > *Most of plotting problems in ggplot2 boil down to data wrangling problems*
@@ -172,6 +180,8 @@ tcga_clinical <- read_delim(here::here("data", "tcga_clinical.txt"))
 xaringanExtra::use_panelset()
 ```
 
+### Initialize a plot object
+
 `ggplot()` is the main plotting function and provides template where plots are constructed in layers. It creates a coordinate system where you can add layers to.
 
 .panelset[
@@ -184,7 +194,7 @@ ggplot(data = tcga_clinical)
 
 .panel[.panel-name[Plot]
 
-```{r ref.label = "ggplot", echo = FALSE}
+```{r ref.label = "ggplot", echo = FALSE, fig.height = 3}
 ```
 ]
 ]
@@ -192,6 +202,8 @@ ggplot(data = tcga_clinical)
 ---
 
 ### Aesthetic mapping layer
+
+Mapping defines how the variables are applied to the plot 
 
 Aesthetic layer or `aes()` for short links variables in data to graphical objects (e.g. by describing position, size, color, etc)
 
@@ -220,7 +232,7 @@ ggplot(
 ---
 ### Geometries layer
 
-Geometric object or `geom` defines the visual object and determines the type of graphs 
+Geometric object or `geom` defines the visual object and determines the type of graphs we create
 
 .panelset[
 .panel[.panel-name[R Code]
@@ -235,7 +247,7 @@ ggplot(
 
 .panel[.panel-name[Plot]
 
-```{r ref.label = "geom", echo = FALSE}
+```{r ref.label = "geom", echo = FALSE, fig.height = 3}
 ```
 ]
 ]
@@ -258,6 +270,7 @@ Aesthetic | Description
 `alpha` | transparency
 `linetype` | line dash pattern
 
+Each `geom` can only display certain aesthetics (point `geom` has position, color, shape, and size aesthetics)
 ---
 #### Mapping onto color aesthetic
 
@@ -550,7 +563,7 @@ Scales control the aesthetic mapping between **data** and **aesthetics** and to 
 
 > .center[
 .big[
-scale\_.bg-blue-light[aesthetics]\_.bg-blue-light[type]
+scale\_.bg-blue-light[aesthetics]\_.bg-blue-light[type]()
 ]
 ]
 
@@ -969,12 +982,12 @@ ggplot(
 ---
 ## Useful resources
 
-- [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf) from RStudio
+- [ggplot2 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html) from RStudio
 
 - [ggplot2 documentation](https://ggplot2.tidyverse.org/)
 
 - [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/), 3rd edition
 
-- [Data visualization chapter from R for Data Science book](https://r4ds.had.co.nz/data-visualisation.html)
+- [Data visualization chapter from R for Data Science book](https://r4ds.hadley.nz/data-visualize.html)
 
 - [Gallery of code examples](https://r-charts.com/ggplot2/) of graphs made with `{ggplot2}` package

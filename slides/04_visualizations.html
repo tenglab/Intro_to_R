@@ -4,12 +4,13 @@
     <title>Data visualization</title>
     <meta charset="utf-8" />
     <meta name="author" content="Ram Thapa" />
-    <meta name="date" content="2023-06-21" />
+    <meta name="date" content="2025-06-11" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
     <link href="libs/panelset/panelset.css" rel="stylesheet" />
     <script src="libs/panelset/panelset.js"></script>
+    <link href="libs/htmltools-fill/fill.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
     <link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
     <script src="libs/datatables-binding/datatables.js"></script>
@@ -52,7 +53,7 @@ Ram Thapa&lt;br&gt;
 ]
 
 .talk-date.moffitt-gray[
-June 21, 2023
+June 11, 2025
 ]
 ]
 
@@ -89,7 +90,6 @@ or to force either to be shown
 --&gt;
 
 ---
-class: middle
 
 - Data visualization is important in most phases of data analysis workflow i.e. from exploratory data analysis to effectively communicating our results
 
@@ -102,40 +102,49 @@ class: middle
 This quote from John Tukey explains the essence of data visualization
 
 ---
+class: middle
+
 Plotting with [{ggplot2}](https://ggplot2.tidyverse.org/) package.
 .pull-left[
 - {`ggplot2`} is one of the most popular R packages for data visualization. It is a part of {`tidyverse`} R meta-package
 
 - {`ggplot2`} is based on a set of principles "Grammar of graphic" and provides a cohesive system for declaratively creating elegant graphics
-
-- Statistical graphic is a mapping from data to aesthetics (such as color, shape and size) represented by geometrics (such as points, lines etc.)
 ]
 
 .pull-right[
-![](04_visualizations_files/figure-html/ggplot2_exploratory.png)
-Artwork by @allison_horst
+.center[
+      &lt;img src="04_visualizations_files/figure-html/ggplot2.png" alt="Description of the image" width="300"/&gt;
+  ]
 ]
 
+- Statistical graphic is a mapping from data to aesthetics (such as color, shape and size) represented by geometrics (such as points, lines etc.)
 ---
 ## Grammar of graphics
 
 The basic idea is that a statistical graphic can be created in a layered fashion, starting with a layer showing the data then adding layers of graphical objects, annotations and statistical summaries
 
-.w-40.center[
-![](04_visualizations_files/figure-html/ggplot_scheme.png)
-]
+Components
+- Layer
+  * Data
+  * Mapping
+  * Geometric object (geom)
+  * Statistical transformation (stat)
+  * Position adjustment (position)
+- Scale
+- Coordinate system (coord)
+- Faceting (facet)
 
 ---
 ### Data layer
 
-Data to be plotted
+Data (information) to be visualized
 
-{`ggplot2`} prefers data to be in *tidy* format 
+**Tidy data** is a standard way of mapping the meaning of a dataset to its structure.
 
 Key features of tidy data:
-- Each column is a variable
-- Each row is an observation
-- Each value must have its own cell
+- each column is a variable
+- each row is an observation
+- each value must have its own cell
 
 
 &gt; *Most of plotting problems in ggplot2 boil down to data wrangling problems*
@@ -146,13 +155,15 @@ Key features of tidy data:
 
 
 
+### Initialize a plot object
+
 `ggplot()` is the main plotting function and provides template where plots are constructed in layers. It creates a coordinate system where you can add layers to.
 
 .panelset[
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(data = tcga_clinical) 
 ```
 ]
@@ -167,6 +178,8 @@ ggplot(data = tcga_clinical)
 
 ### Aesthetic mapping layer
 
+Mapping defines how the variables are applied to the plot 
+
 Aesthetic layer or `aes()` for short links variables in data to graphical objects (e.g. by describing position, size, color, etc)
 
 Each aesthetic can be mapped to a variable (or set to a constant value) by associating the name of the aesthetic to the name of the variable inside `aes()`
@@ -178,7 +191,7 @@ Each aesthetic can be mapped to a variable (or set to a constant value) by assoc
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
 * mapping = aes(x = weight, y = height))
@@ -194,13 +207,13 @@ ggplot(
 ---
 ### Geometries layer
 
-Geometric object or `geom` defines the visual object and determines the type of graphs 
+Geometric object or `geom` defines the visual object and determines the type of graphs we create
 
 .panelset[
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height)) + 
@@ -232,6 +245,7 @@ Aesthetic | Description
 `alpha` | transparency
 `linetype` | line dash pattern
 
+Each `geom` can only display certain aesthetics (point `geom` has position, color, shape, and size aesthetics)
 ---
 #### Mapping onto color aesthetic
 
@@ -239,7 +253,7 @@ Aesthetic | Description
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, 
@@ -262,7 +276,7 @@ ggplot(
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, 
@@ -280,12 +294,12 @@ ggplot(
 ]
 ---
 
-### [<svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:skyblue;overflow:visible;position:relative;"><path d="M172.5 131.1C228.1 75.51 320.5 75.51 376.1 131.1C426.1 181.1 433.5 260.8 392.4 318.3L391.3 319.9C381 334.2 361 337.6 346.7 327.3C332.3 317 328.9 297 339.2 282.7L340.3 281.1C363.2 249 359.6 205.1 331.7 177.2C300.3 145.8 249.2 145.8 217.7 177.2L105.5 289.5C73.99 320.1 73.99 372 105.5 403.5C133.3 431.4 177.3 435 209.3 412.1L210.9 410.1C225.3 400.7 245.3 404 255.5 418.4C265.8 432.8 262.5 452.8 248.1 463.1L246.5 464.2C188.1 505.3 110.2 498.7 60.21 448.8C3.741 392.3 3.741 300.7 60.21 244.3L172.5 131.1zM467.5 380C411 436.5 319.5 436.5 263 380C213 330 206.5 251.2 247.6 193.7L248.7 192.1C258.1 177.8 278.1 174.4 293.3 184.7C307.7 194.1 311.1 214.1 300.8 229.3L299.7 230.9C276.8 262.1 280.4 306.9 308.3 334.8C339.7 366.2 390.8 366.2 422.3 334.8L534.5 222.5C566 191 566 139.1 534.5 108.5C506.7 80.63 462.7 76.99 430.7 99.9L429.1 101C414.7 111.3 394.7 107.1 384.5 93.58C374.2 79.2 377.5 59.21 391.9 48.94L393.5 47.82C451 6.731 529.8 13.25 579.8 63.24C636.3 119.7 636.3 211.3 579.8 267.7L467.5 380z"/></svg> geom catalogue](https://ggplot2.tidyverse.org/reference/index.html#section-layers)
+### [<svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:skyblue;overflow:visible;position:relative;"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg> geom catalogue](https://ggplot2.tidyverse.org/reference/index.html#section-layers)
 
 
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-b09e167a5b8174bffa9e" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-b09e167a5b8174bffa9e">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["geom_abline(), geom_hline(), geom_vline()","geom_bar(), geom_col()","geom_bin2d()","geom_blank()","geom_boxplot()","geom_contour(), geom_contour_filled()","geom_count()","geom_density()","geom_density_2d(), geom_density_2d_filled()","geom_dotplot()","geom_errorbarh()","geom_function()","geom_hex()","geom_freqpoly(), geom_histogram()","geom_jitter()","geom_crossbar(), geom_errorbar(), geom_linerange(), geom_pointrange()","geom_map()","geom_path(), geom_line(), geom_step()","geom_point()","geom_polygon()","geom_qq_line(), geom_qq()","geom_quantile()","geom_ribbon(), geom_area()","geom_rug()","geom_segment(), geom_curve()","geom_smooth()","geom_spoke()","geom_label(), geom_text()","geom_raster(), geom_rect(), geom_tile()","geom_violin()","coord_sf(), geom_sf(), geom_sf_label(), geom_sf_text()"],["Reference lines: horizontal, vertical, and diagonal","Bar charts","Heatmap of 2d bin counts","Draw nothing","A box and whiskers plot (in the style of Tukey)","2D contours of a 3D surface","Count overlapping points","Smoothed density estimates","Contours of a 2D density estimate","Dot plot","Horizontal error bars","Draw a function as a continuous curve","Hexagonal heatmap of 2d bin counts","Histograms and frequency polygons","Jittered points","Vertical intervals: lines, crossbars &amp; errorbars","Polygons from a reference map","Connect observations","Points","Polygons","A quantile-quantile plot","Quantile regression","Ribbons and area plots","Rug plots in the margins","Line segments and curves","Smoothed conditional means","Line segments parameterised by location, direction and distance","Text","Rectangles","Violin plot","Visualise sf objects"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>geom<\/th>\n      <th>description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"dom":"ftp","columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-118818771e040ed00c49" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-118818771e040ed00c49">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["geom_abline(), geom_hline(), geom_vline()","geom_bar(), geom_col()","geom_bin2d()","geom_blank()","geom_boxplot()","geom_contour(), geom_contour_filled()","geom_count()","geom_density()","geom_density_2d(), geom_density_2d_filled()","geom_dotplot()","geom_errorbarh()","geom_function()","geom_hex()","geom_freqpoly(), geom_histogram()","geom_jitter()","geom_crossbar(), geom_errorbar(), geom_linerange(), geom_pointrange()","geom_map()","geom_path(), geom_line(), geom_step()","geom_point()","geom_polygon()","geom_qq_line(), geom_qq()","geom_quantile()","geom_ribbon(), geom_area()","geom_rug()","geom_segment(), geom_curve()","geom_smooth()","geom_spoke()","geom_label(), geom_text()","geom_raster(), geom_rect(), geom_tile()","geom_violin()","coord_sf(), geom_sf(), geom_sf_label(), geom_sf_text()"],["Reference lines: horizontal, vertical, and diagonal","Bar charts","Heatmap of 2d bin counts","Draw nothing","A box and whiskers plot (in the style of Tukey)","2D contours of a 3D surface","Count overlapping points","Smoothed density estimates","Contours of a 2D density estimate","Dot plot","Horizontal error bars","Draw a function as a continuous curve","Hexagonal heatmap of 2d bin counts","Histograms and frequency polygons","Jittered points","Vertical intervals: lines, crossbars &amp; errorbars","Polygons from a reference map","Connect observations","Points","Polygons","A quantile-quantile plot","Quantile regression","Ribbons and area plots","Rug plots in the margins","Line segments and curves","Smoothed conditional means","Line segments parameterised by location, direction and distance","Text","Rectangles","Violin plot","Visualise sf objects"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>geom<\/th>\n      <th>description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"dom":"ftp","columnDefs":[{"name":"geom","targets":0},{"name":"description","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 
 ---
 ### Statistics layer
@@ -298,7 +312,7 @@ Transforms input variables to displayed values in plot (e.g. count number of obs
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = stage)) +  
@@ -316,7 +330,7 @@ Under the hood, data is transformed or new value is calculated by `stat` argumen
 
 .pull-left[
 
-```r
+``` r
 p1 &lt;- ggplot(
   data = tcga_clinical,
   mapping = aes(x = stage)) +  
@@ -326,7 +340,7 @@ p1 &lt;- ggplot(
 
 .pull-right[
 
-```r
+``` r
 p2 &lt;- ggplot(
   data = tcga_clinical,
   mapping = aes(x = stage)) +  
@@ -335,13 +349,13 @@ p2 &lt;- ggplot(
 ]
 
 ---
-### [<svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:skyblue;overflow:visible;position:relative;"><path d="M172.5 131.1C228.1 75.51 320.5 75.51 376.1 131.1C426.1 181.1 433.5 260.8 392.4 318.3L391.3 319.9C381 334.2 361 337.6 346.7 327.3C332.3 317 328.9 297 339.2 282.7L340.3 281.1C363.2 249 359.6 205.1 331.7 177.2C300.3 145.8 249.2 145.8 217.7 177.2L105.5 289.5C73.99 320.1 73.99 372 105.5 403.5C133.3 431.4 177.3 435 209.3 412.1L210.9 410.1C225.3 400.7 245.3 404 255.5 418.4C265.8 432.8 262.5 452.8 248.1 463.1L246.5 464.2C188.1 505.3 110.2 498.7 60.21 448.8C3.741 392.3 3.741 300.7 60.21 244.3L172.5 131.1zM467.5 380C411 436.5 319.5 436.5 263 380C213 330 206.5 251.2 247.6 193.7L248.7 192.1C258.1 177.8 278.1 174.4 293.3 184.7C307.7 194.1 311.1 214.1 300.8 229.3L299.7 230.9C276.8 262.1 280.4 306.9 308.3 334.8C339.7 366.2 390.8 366.2 422.3 334.8L534.5 222.5C566 191 566 139.1 534.5 108.5C506.7 80.63 462.7 76.99 430.7 99.9L429.1 101C414.7 111.3 394.7 107.1 384.5 93.58C374.2 79.2 377.5 59.21 391.9 48.94L393.5 47.82C451 6.731 529.8 13.25 579.8 63.24C636.3 119.7 636.3 211.3 579.8 267.7L467.5 380z"/></svg> stat catalogue](https://ggplot2.tidyverse.org/reference/index.html#section-layers)
+### [<svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:skyblue;overflow:visible;position:relative;"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg> stat catalogue](https://ggplot2.tidyverse.org/reference/index.html#section-layers)
 
 
 
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-3d3d1548660922354e00" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-3d3d1548660922354e00">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["stat_count()","stat_bin_2d()","stat_boxplot()","stat_contour(), stat_contour_filled()","stat_sum()","stat_density()","stat_density_2d(), stat_density_2d_filled()","stat_function()","stat_bin_hex()","stat_bin()","stat_qq_line(), stat_qq()","stat_quantile()","stat_smooth()","stat_ydensity()","stat_sf()","stat_ecdf()","stat_ellipse()","geom_function(), stat_function()","stat_identity()","stat_summary_2d(), stat_summary_hex()","stat_summary_bin(), stat_summary()","stat_unique()","stat_sf_coordinates()","after_stat(), after_scale(), stage()"],["Bar charts","Heatmap of 2d bin counts","A box and whiskers plot (in the style of Tukey)","2D contours of a 3D surface","Count overlapping points","Smoothed density estimates","Contours of a 2D density estimate","Draw a function as a continuous curve","Hexagonal heatmap of 2d bin counts","Histograms and frequency polygons","A quantile-quantile plot","Quantile regression","Smoothed conditional means","Violin plot","Visualise sf objects","Compute empirical cumulative distribution","Compute normal data ellipses","Draw a function as a continuous curve","Leave data as is","Bin and summarise in 2d (rectangle &amp; hexagons)","Summarise y values at unique/binned x","Remove duplicates","Extract coordinates from 'sf' objects","Control aesthetic evaluation"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>stat<\/th>\n      <th>description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"dom":"ftp","columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-66f64a908c35baa024ed" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-66f64a908c35baa024ed">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["stat_count()","stat_bin_2d()","stat_boxplot()","stat_contour(), stat_contour_filled()","stat_sum()","stat_density()","stat_density_2d(), stat_density_2d_filled()","stat_function()","stat_bin_hex()","stat_bin()","stat_qq_line(), stat_qq()","stat_quantile()","stat_smooth()","stat_ydensity()","stat_sf()","stat_ecdf()","stat_ellipse()","geom_function(), stat_function()","stat_identity()","stat_summary_2d(), stat_summary_hex()","stat_summary_bin(), stat_summary()","stat_unique()","stat_sf_coordinates()","after_stat(), after_scale(), stage()"],["Bar charts","Heatmap of 2d bin counts","A box and whiskers plot (in the style of Tukey)","2D contours of a 3D surface","Count overlapping points","Smoothed density estimates","Contours of a 2D density estimate","Draw a function as a continuous curve","Hexagonal heatmap of 2d bin counts","Histograms and frequency polygons","A quantile-quantile plot","Quantile regression","Smoothed conditional means","Violin plot","Visualise sf objects","Compute empirical cumulative distribution","Compute normal data ellipses","Draw a function as a continuous curve","Leave data as is","Bin and summarise in 2d (rectangle &amp; hexagons)","Summarise y values at unique/binned x","Remove duplicates","Extract coordinates from 'sf' objects","Control aesthetic evaluation"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>stat<\/th>\n      <th>description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"dom":"ftp","columnDefs":[{"name":"stat","targets":0},{"name":"description","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 
 ---
 ### Scales layer
@@ -350,7 +364,7 @@ Scales control the aesthetic mapping between **data** and **aesthetics** and to 
 
 &gt; .center[
 .big[
-scale\_.bg-blue-light[aesthetics]\_.bg-blue-light[type]
+scale\_.bg-blue-light[aesthetics]\_.bg-blue-light[type]()
 ]
 ]
 
@@ -385,7 +399,7 @@ ggplot2 adds a default scale for each of the aesthetics used in the plot
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   aes(x = weight, y = height, color = gender)) +  
@@ -394,7 +408,7 @@ ggplot(
 
 ...is equivalent to 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height, color = gender)) +  
@@ -418,7 +432,7 @@ We can override the defaults by adding the `scale` function
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height, color = gender)) +  
@@ -447,7 +461,7 @@ It splits the data into subsets and displays the same graph for each subset
 Before {`ggplot2`} v3.0.0 the variables used for faceting could only be passed as a formula notation (`&lt;variable&gt; ~ &lt;variable&gt;`) but now the variables used for faceting can be passed wrapped in `vars()`.
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height)) +  
@@ -466,7 +480,7 @@ There are two types of facetting:
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height)) +  
@@ -490,7 +504,7 @@ ggplot(
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height)) +  
@@ -527,7 +541,7 @@ rectangle | `element_rect()`
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height, color = gender)) +  
@@ -549,7 +563,7 @@ ggplot(
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height, color = gender)) +  
@@ -583,7 +597,7 @@ We can avoid the `theme()` function by using built-in themes
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height, color = gender)) +  
@@ -608,7 +622,7 @@ Set a default theme for the rest of your plots using `theme_set()` at the top of
 #### Global
 inside `ggplot()` call
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
 * mapping = aes(x = weight,
@@ -623,7 +637,7 @@ ggplot(
 
 inside `geom_*()` layer
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) + 
 * geom_point(
@@ -642,7 +656,7 @@ However, when we start adding more layers, the distinction becomes more importan
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
 * mapping = aes(x = weight,
@@ -668,7 +682,7 @@ ggplot(
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight,  
@@ -695,7 +709,7 @@ Aesthetic property can also be set to a single value (constant) by specifying it
 
 .w-70.center[
 
-```r
+``` r
 ... +
   geom_point(aes(color = gender))
 ```
@@ -706,7 +720,7 @@ Aesthetic property can also be set to a single value (constant) by specifying it
 
 .w-70.center[
 
-```r
+``` r
 ... +
   geom_point(color = "blue")
 ```
@@ -716,7 +730,7 @@ Aesthetic property can also be set to a single value (constant) by specifying it
 .pull-left[
 ### Mapping
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight,  
@@ -730,7 +744,7 @@ ggplot(
 .pull-right[
 ### Setting
 
-```r
+``` r
 ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight,  
@@ -754,7 +768,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 *ggplot(
 * data = tcga_clinical)
 ```
@@ -770,7 +784,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) +
 * aes(
@@ -789,7 +803,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) +
   aes(
@@ -810,7 +824,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) +
   aes(
@@ -834,7 +848,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) +
   aes(
@@ -860,7 +874,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) +
   aes(
@@ -889,7 +903,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) +
   aes(
@@ -919,7 +933,7 @@ count: false
 
 .panel1-ggplotflipbook-auto[
 
-```r
+``` r
 ggplot(
   data = tcga_clinical) +
   aes(
@@ -977,13 +991,13 @@ ggplot(
 ---
 ## Useful resources
 
-- [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf) from RStudio
+- [ggplot2 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html) from RStudio
 
 - [ggplot2 documentation](https://ggplot2.tidyverse.org/)
 
 - [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/), 3rd edition
 
-- [Data visualization chapter from R for Data Science book](https://r4ds.had.co.nz/data-visualisation.html)
+- [Data visualization chapter from R for Data Science book](https://r4ds.hadley.nz/data-visualize.html)
 
 - [Gallery of code examples](https://r-charts.com/ggplot2/) of graphs made with `{ggplot2}` package
     </textarea>
