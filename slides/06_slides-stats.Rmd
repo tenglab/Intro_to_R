@@ -817,7 +817,7 @@ rs3 <- tcga %>% correlation::cor_test("BRAF_exp",
 
 ---
  
-## Pearson Correlation 
+## Spearman Correlation 
  
 
 ```{r comment=NA}
