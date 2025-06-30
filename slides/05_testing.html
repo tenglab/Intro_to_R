@@ -4,7 +4,7 @@
     <title>Statistical tests</title>
     <meta charset="utf-8" />
     <meta name="author" content="Ram Thapa" />
-    <meta name="date" content="2023-06-28" />
+    <meta name="date" content="2025-06-18" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
@@ -43,24 +43,24 @@ Ram Thapa&lt;br&gt;
 ]
 
 .talk-date.moffitt-gray[
-June 28, 2023
+June 18, 2025
 ]
 ]
 
 
 &lt;style type="text/css"&gt;
 /* Define title slide image or logo here */
-  .talk-logo {
-    width: 400px;
-    height: 750px;
-    position: absolute;
-    top: 6%;
-    right: 7%;
-    /* background-image: url('img/r4ds-cover.png'); */
-      background-size: contain;
-    background-repeat: no-repeat;
-    background-position: contain;
-  }
+.talk-logo {
+width: 400px;
+height: 750px;
+position: absolute;
+top: 6%;
+right: 7%;
+/* background-image: url('img/r4ds-cover.png'); */
+background-size: contain;
+background-repeat: no-repeat;
+background-position: contain;
+}
 &lt;/style&gt;
 
 &lt;!-- Moffitt Logo and Slide Border ----
@@ -87,8 +87,7 @@ or to force either to be shown
 - ANOVA 
 
 
-Briefly talk about non-parametric alternatives (when data are not normally distributed) as well
-
+Non-parametric alternatives (when data are not normally distributed)
 
 - Mann Whitney U test (Wilcoxon Rank Sum test) 
 
@@ -98,10 +97,10 @@ Briefly talk about non-parametric alternatives (when data are not normally distr
 ---
 
 ## t-test
- 
+
 Unpaired two-samples t-test is used to compare the mean of two independent groups
- 
- 
+
+
 **t-test assumptions**
 
 - The data are continuous (not discrete) and follow the normal probability distribution
@@ -111,7 +110,7 @@ Unpaired two-samples t-test is used to compare the mean of two independent group
 - The two samples are independent. There is no relationship between the individuals in one sample as compared to the other (as there is in the paired t-test)
 
 - Both samples are simple random samples from their respective populations. Each individual in the population has an equal probability of being selected in the sample
- 
+
 ---
 ## t-test formula
 
@@ -119,7 +118,7 @@ Unpaired two-samples t-test is used to compare the mean of two independent group
 
 `$$t = \frac{\overline{x}_{1} - \overline{x}_{2}}{S_{p}\sqrt{\frac{1}{N_{1}} + \frac{1}{N_{2}}}}$$`
 where:
-`\(S_{p}\)` = `\(\sqrt{\frac{(N_{1}-1)s^{2}_{1} + (N_{1}-1)s^{2}_{1}}{N_{1}+N_{2}-2}}\)` 
+`\(S_{p}\)` = `\(\sqrt{\frac{(N_{1}-1)s^{2}_{1} + (N_{2}-1)s^{2}_{2}}{N_{1}+N_{2}-2}}\)` 
 
 degrees of freedom `\(df=N_{1}+N_{2}-2\)`
 
@@ -137,7 +136,7 @@ degrees of freedom
 ## TCGA data
 
 
-```r
+``` r
 library(tidyverse)
 library(broom)
 
@@ -150,8 +149,7 @@ tcga_gene_exp &lt;- read_delim(here::here("data", "tcga_gene_exp.txt"))
 
 # Merge clinical and expression data
 clinical_exprs &lt;- left_join(
-  clinical, tcga_gene_exp, by = "bcr_patient_barcode") %&gt;% 
-  mutate(stage = str_remove(stage, "A$|B$|C$"))
+  clinical, tcga_gene_exp, by = "bcr_patient_barcode")
 ```
 
 ---
@@ -163,13 +161,13 @@ clinical_exprs &lt;- left_join(
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(clinical_exprs , aes(gender, PTEN_exp, fill = gender))  +
   geom_boxplot() +
   stat_summary(
     fun = "mean", geom = "point", color = "blue", size = 3) +
   scale_fill_brewer(palette = "Accent") +
-  labs(title = "PTEN expression" , x = "Gender", y = "expression") +
+  labs(title = "PTEN expression" , x = "Gender", y = "Gene expression") +
   theme(legend.position = "none")  
 ```
 ]
@@ -180,18 +178,18 @@ ggplot(clinical_exprs , aes(gender, PTEN_exp, fill = gender))  +
 ]
 ]
 ---
- 
+
 ## Visualize histograms
-  
+
 
 .panelset[
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(clinical_exprs, aes(x = PTEN_exp, fill = gender)) +
-  scale_fill_brewer(palette = "Accent") + 
-  geom_histogram(alpha = 0.5, position = "identity") 
+  geom_histogram(alpha = 0.5, position = "identity") +
+  scale_fill_brewer(palette = "Accent") 
 ```
 ]
 
@@ -205,7 +203,7 @@ ggplot(clinical_exprs, aes(x = PTEN_exp, fill = gender)) +
 ## t-test R call
 
 
-```default
+``` default
 t.test(x, ...)
 
 ## Default S3 method:
@@ -224,7 +222,7 @@ If the dependent and independent variables are in a dataframe, you can use the f
 class: middle
 
 
-```r
+``` r
 res &lt;- t.test(
   PTEN_exp ~ gender, data = clinical_exprs, alternative = c("two.sided"))
 
@@ -257,7 +255,7 @@ The result of `t.test()` is a list of components such as estimate, parameter, p-
 
 
 
-```r
+``` r
 tidy_res &lt;- t.test(
   PTEN_exp ~ gender, data = clinical_exprs,
   alternative = c("two.sided")) %&gt;% 
@@ -267,13 +265,12 @@ tidy_res
 ```
 
 ```
-## # A tibble: 1 x 10
-##   estimate estimate1 estimate2 stati~1 p.value param~2 conf.~3 conf.~4
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-## 1     115.     2092.     1977.    2.47  0.0136    719.    23.7    207.
-## # ... with 2 more variables: method &lt;chr&gt;, alternative &lt;chr&gt;, and
-## #   abbreviated variable names 1: statistic, 2: parameter,
-## #   3: conf.low, 4: conf.high
+## # A tibble: 1 × 10
+##   estimate estimate1 estimate2 statistic p.value parameter conf.low
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1     115.     2092.     1977.      2.47  0.0136      719.     23.7
+## # ℹ 3 more variables: conf.high &lt;dbl&gt;, method &lt;chr&gt;,
+## #   alternative &lt;chr&gt;
 ```
 
 ---
@@ -281,24 +278,22 @@ tidy_res
 
 ## Mann Whitney U test (Wilcoxon Rank Sum test) 
 
- 
+
 A popular non-parametric test to compare outcomes between two independent groups 
 
 The Mann Whitney U test, sometimes called the Mann Whitney Wilcoxon test or the Wilcoxon Rank Sum test, is used to test whether two samples are likely to derive from the same population (i.e., that the two populations have the same shape)
-
-It can also be used on related samples or matched samples to assess whether their population mean ranks differ (i.e. it is a paired difference test)
 
 It can be used as an alternative to the paired Student's t-test when the distribution of the difference between two samples' means cannot be assumed to be normally distributed
 
 ---
 ## Visualize histograms by gender
-  
+
 .panelset[
 
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(clinical_exprs, aes(x = BUB1_exp )) +
   geom_histogram(color = "gray70") +
   facet_wrap(vars(gender))
@@ -312,15 +307,15 @@ ggplot(clinical_exprs, aes(x = BUB1_exp )) +
 ]
 
 ---
- 
+
 ## Visualize boxplots by gender
-  
+
 .panelset[
 .panel[.panel-name[R Code]
 
 
 
-```r
+``` r
 ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = gender))  +
   geom_boxplot() +
   scale_fill_brewer(palette = "Accent") +
@@ -339,7 +334,7 @@ ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = gender))  +
 ## Wilcoxon test R call
 
 
-```default
+``` default
 wilcox.test(x, ...)
 
 ## Default S3 method:
@@ -357,10 +352,10 @@ wilcox.test(formula, data, subset, na.action, ...)
 ## Wilcoxon test by gender
 
 
-```r
+``` r
 wilcox_gender &lt;- wilcox.test(
   BUB1_exp ~ gender, data = clinical_exprs, alternative = c("two.sided"))
- 
+
 wilcox_gender 
 ```
 
@@ -373,7 +368,7 @@ W = 93990, p-value = 7.221e-07
 alternative hypothesis: true location shift is not equal to 0
 ```
 
-The p-value is very low so we reject the null hypothesis of no difference (0 location shift) 
+The p-value is very low so we reject the null hypothesis and conclude that the BUB1 expression of male and female are *nonidentical* populations
 
 ---
 
@@ -390,13 +385,13 @@ Assumptions
 
 ---
 ## Visualize boxplots by stage
-  
+
 .panelset[
 
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(clinical_exprs , aes(stage, BUB1_exp, fill = stage))  +
   geom_boxplot() +
   scale_fill_brewer(palette = "Accent") +
@@ -419,14 +414,14 @@ ggplot(clinical_exprs , aes(stage, BUB1_exp, fill = stage))  +
 
 
 
-```default
+``` default
 aov(formula, data = NULL, projections = FALSE, qr = TRUE,
     contrasts = NULL, ...)
 ```
 
 
 
-```r
+``` r
 fit_stage &lt;- aov(
   BUB1_exp ~ stage, data = clinical_exprs)
 
@@ -440,8 +435,8 @@ summary(fit_stage)
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
- 
- 
+
+
 You can use `tidy()` function on `aov` object to get result as tibble
 
 ---
@@ -456,7 +451,7 @@ Function `TukeyHD()` takes the fitted ANOVA as an argument
 ---
 
 
-```r
+``` r
 # Conduct post-hoc tests
 TukeyHSD(fit_stage)
 ```
@@ -486,11 +481,11 @@ All three types give the same result if data is relatively **balanced** (relativ
 Standard `aov()` function uses Type I sums of squares and `Anova()` function in {`car`} package provides options to conduct ANOVA with Type II or Type III sums of squares
 
 
-```default
+``` default
 ## S3 method for class 'lm'
 Anova(mod, error, type=c("II","III", 2, 3),
-	white.adjust=c(FALSE, TRUE, "hc3", "hc0", "hc1", "hc2", "hc4"),
-	vcov.=NULL, singular.ok, ...)
+      white.adjust=c(FALSE, TRUE, "hc3", "hc0", "hc1", "hc2", "hc4"),
+      vcov.=NULL, singular.ok, ...)
 
 ## S3 method for class 'aov'
 Anova(mod, ...)
@@ -499,13 +494,13 @@ Anova(mod, ...)
 ---
 
 ## Two-way ANOVA: boxplot by gender &amp; stage
-  
+
 .panelset[
 
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = stage))  +
   geom_boxplot() +
   scale_fill_brewer(NULL, palette = "Accent") +
@@ -530,7 +525,7 @@ ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = stage))  +
 ## Two-way ANOVA 
 
 
-```r
+``` r
 fit_gender_stage &lt;- aov(
   BUB1_exp ~ gender + stage, data = clinical_exprs)
 
@@ -552,7 +547,7 @@ summary(fit_gender_stage)
 Kruskal-Wallis test is a non-parametric alternative to one-way ANOVA test
 
 
-```default
+``` default
 kruskal.test(x, ...)
 
 ## Default S3 method:
@@ -566,13 +561,13 @@ It extends the two-samples Wilcoxon test where there are more than two groups to
 
 ---
 ## Visualize boxplots by smoking status
-  
+
 .panelset[
 
 .panel[.panel-name[R Code]
 
 
-```r
+``` r
 clinical_exprs %&gt;% 
   drop_na(smoking) %&gt;% 
   ggplot(aes(smoking, HDAC1_exp, fill = smoking))  +
@@ -591,7 +586,7 @@ clinical_exprs %&gt;%
 ---
 
 
-```r
+``` r
 fit_smoking &lt;- kruskal.test(HDAC1_exp ~ smoking, data = clinical_exprs)
 
 fit_smoking
@@ -610,12 +605,12 @@ fit_smoking
 Output in tibble using `tidy()` function
 
 
-```r
+``` r
 tidy(fit_smoking)
 ```
 
 ```
-## # A tibble: 1 x 4
+## # A tibble: 1 × 4
 ##   statistic  p.value parameter method                      
 ##       &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;                       
 ## 1      14.0 0.000909         2 Kruskal-Wallis rank sum test
@@ -628,7 +623,7 @@ tidy(fit_smoking)
 Use `pairwise.wilcox.test()` to calculate pairwise comparisons between group levels with corrections for multiple testing
 
 
-```r
+``` r
 pairwise.wilcox.test(
   clinical_exprs$HDAC1_exp, clinical_exprs$smoking, 
   p.adjust.method = "BH") %&gt;% 
@@ -636,7 +631,7 @@ pairwise.wilcox.test(
 ```
 
 ```
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##   group1 group2  p.value
 ##   &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt;
 ## 1 Former Current 0.388  
@@ -650,6 +645,8 @@ Benjamini &amp; Hochberg (also known as FDR) method is used for multiple correct
 ## Useful resource
 
 [rstatix](https://rpkgs.datanovia.com/rstatix/index.html) R package that provides a simple and intuitive pipe-friendly framework, coherent with the ‘tidyverse’ design philosophy, for performing basic statistical tests, including t-test, Wilcoxon test, ANOVA, Kruskal-Wallis and correlation analyses. 
+
+[gtsummary](https://www.danieldsjoberg.com/gtsummary/) R package that provides an elegant and flexible way to create publication-ready analytical and summary tables. It summarizes data sets, regression models, and more, using sensible defaults with highly customizable capabilities.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="libs/remark-0.14.0.min.js"></script>
