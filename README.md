@@ -7,7 +7,7 @@
 
 ------------------------------------------------------------------------
 
-:calendar: May 21 - July 16 2025
+:calendar: May 20 - July 15 2026
 
 :alarm_clock: 3:00 - 3:50 pm
 
@@ -42,7 +42,7 @@ found in the class Moodle.
 
 ## Questions?
 
-Feel free to ask questions in the [GitHub Issues](https://github.com/tenglab/Intro_to_R_2025/issues).
+Feel free to ask questions in the [GitHub Issues](https://github.com/tenglab/Intro_to_R/issues).
 
 ## Overview
 
@@ -71,26 +71,26 @@ you used R but are new to the `tidyverse` framework?
 ## Materials
 
 Materials will be made available on
-[GitHub](https://github.com/tenglab/Intro_to_R_2025).  
+[GitHub](https://github.com/tenglab/Intro_to_R).  
 If you are using an organization-issued laptop, you may want to verify
 before you arrive that you can access GitHub.
 
 ## Schedule and Links
 
-- May 21 - [Basics of R/RStudio](https://moffitt.hosted.panopto.com/)
-- May 28 - [Data import and wrangling part
+- May 20 - [Basics of R/RStudio](https://moffitt.hosted.panopto.com/)
+- May 27 - [Data import and wrangling part
   I](https://moffitt.hosted.panopto.com/)
-- June 4 - [Data wrangling part II &
+- June 3 - [Data wrangling part II &
   Tidyverse](https://moffitt.hosted.panopto.com/)
-- June 11 - [Visualizations with `ggplot2` part
+- June 10 - [Visualizations with `ggplot2` part
   I](https://moffitt.hosted.panopto.com/)
-- June 18 - [Statistical testing of means and
+- June 17 - [Statistical testing of means and
   visualizations](https://moffitt.hosted.panopto.com/)
-- June 25 - [Regression modeling and
+- June 24 - [Regression modeling and
   visualizations](https://moffitt.hosted.panopto.com/)
-- July 9 - [Categorial data analysis and survival
+- July 8 - [Categorial data analysis and survival
   analysis](https://moffitt.hosted.panopto.com/)
-- July 16 - [`rmarkdown`](https://moffitt.hosted.panopto.com/)
+- July 15 - [`rmarkdown`](https://moffitt.hosted.panopto.com/)
 
 ## Instructors
 
